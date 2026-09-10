@@ -1,0 +1,139 @@
+IF DB_ID(N'NeptunoDB') IS NULL CREATE DATABASE NeptunoDB;
+GO
+USE NeptunoDB;
+GO
+
+IF OBJECT_ID(N'dbo.Categorias', N'U') IS NULL
+CREATE TABLE dbo.Categorias (
+    CategoriaID INT IDENTITY(1,1) PRIMARY KEY,
+    NombreCategoria NVARCHAR(30) NOT NULL,
+    Descripcion NVARCHAR(200) NULL
+);
+GO
+IF OBJECT_ID(N'dbo.Proveedores', N'U') IS NULL
+CREATE TABLE dbo.Proveedores (
+    ProveedorID INT IDENTITY(1,1) PRIMARY KEY,
+    CompaniaNombre NVARCHAR(60) NOT NULL,
+    NombreContacto NVARCHAR(40) NULL, CargoContacto NVARCHAR(40) NULL,
+    Direccion NVARCHAR(80) NULL, Ciudad NVARCHAR(30) NULL,
+    CodigoPostal NVARCHAR(10) NULL, Pais NVARCHAR(30) NULL,
+    Telefono NVARCHAR(24) NULL, Fax NVARCHAR(24) NULL
+);
+GO
+IF OBJECT_ID(N'dbo.Clientes', N'U') IS NULL
+CREATE TABLE dbo.Clientes (
+    ClienteID INT IDENTITY(1,1) PRIMARY KEY, Empresa NVARCHAR(60) NOT NULL,
+    NombreContacto NVARCHAR(40) NULL, Ciudad NVARCHAR(30) NULL,
+    Pais NVARCHAR(30) NULL, Telefono NVARCHAR(24) NULL
+);
+GO
+IF OBJECT_ID(N'dbo.Empleados', N'U') IS NULL
+CREATE TABLE dbo.Empleados (
+    EmpleadoID INT IDENTITY(1,1) PRIMARY KEY, Nombre NVARCHAR(20) NOT NULL,
+    Apellidos NVARCHAR(30) NOT NULL, Cargo NVARCHAR(40) NULL,
+    FechaNacimiento DATE NULL, FechaContratacion DATE NULL,
+    Ciudad NVARCHAR(30) NULL, Pais NVARCHAR(30) NULL
+);
+GO
+IF OBJECT_ID(N'dbo.Transportistas', N'U') IS NULL
+CREATE TABLE dbo.Transportistas (
+    TransportistaID INT IDENTITY(1,1) PRIMARY KEY,
+    CompaniaNombre NVARCHAR(60) NOT NULL, Telefono NVARCHAR(24) NULL
+);
+GO
+IF OBJECT_ID(N'dbo.Productos', N'U') IS NULL
+CREATE TABLE dbo.Productos (
+    ProductoID INT IDENTITY(1,1) PRIMARY KEY,
+    NombreProducto NVARCHAR(60) NOT NULL,
+    ProveedorID INT NULL, CategoriaID INT NULL,
+    CantidadPorUnidad NVARCHAR(30) NULL,
+    PrecioUnidad DECIMAL(10,2) NOT NULL CONSTRAINT DF_Productos_Precio DEFAULT 0,
+    UnidadesEnExistencia SMALLINT NOT NULL CONSTRAINT DF_Productos_Existencia DEFAULT 0,
+    UnidadesEnPedido SMALLINT NOT NULL CONSTRAINT DF_Productos_Pedido DEFAULT 0,
+    NivelDeReorden SMALLINT NOT NULL CONSTRAINT DF_Productos_Reorden DEFAULT 0,
+    Descontinuado BIT NOT NULL CONSTRAINT DF_Productos_Descontinuado DEFAULT 0,
+    CONSTRAINT FK_Productos_Proveedores FOREIGN KEY (ProveedorID) REFERENCES dbo.Proveedores(ProveedorID),
+    CONSTRAINT FK_Productos_Categorias FOREIGN KEY (CategoriaID) REFERENCES dbo.Categorias(CategoriaID)
+);
+GO
+IF OBJECT_ID(N'dbo.Pedidos', N'U') IS NULL
+CREATE TABLE dbo.Pedidos (
+    PedidoID INT IDENTITY(1,1) PRIMARY KEY, ClienteID INT NULL, EmpleadoID INT NULL,
+    FechaPedido DATE NOT NULL, FechaRequerida DATE NULL, FechaEnvio DATE NULL,
+    TransportistaID INT NULL, Destinatario NVARCHAR(60) NULL,
+    CiudadDestino NVARCHAR(30) NULL, PaisDestino NVARCHAR(30) NULL,
+    CONSTRAINT FK_Pedidos_Clientes FOREIGN KEY (ClienteID) REFERENCES dbo.Clientes(ClienteID),
+    CONSTRAINT FK_Pedidos_Empleados FOREIGN KEY (EmpleadoID) REFERENCES dbo.Empleados(EmpleadoID),
+    CONSTRAINT FK_Pedidos_Transportistas FOREIGN KEY (TransportistaID) REFERENCES dbo.Transportistas(TransportistaID)
+);
+GO
+IF OBJECT_ID(N'dbo.DetallePedidos', N'U') IS NULL
+CREATE TABLE dbo.DetallePedidos (
+    PedidoID INT NOT NULL, ProductoID INT NOT NULL,
+    PrecioUnidad DECIMAL(10,2) NOT NULL, Cantidad SMALLINT NOT NULL DEFAULT 1,
+    Descuento DECIMAL(4,2) NOT NULL DEFAULT 0,
+    CONSTRAINT PK_DetallePedidos PRIMARY KEY (PedidoID, ProductoID),
+    CONSTRAINT FK_DetallePedidos_Pedidos FOREIGN KEY (PedidoID) REFERENCES dbo.Pedidos(PedidoID),
+    CONSTRAINT FK_DetallePedidos_Productos FOREIGN KEY (ProductoID) REFERENCES dbo.Productos(ProductoID)
+);
+GO
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Categorias)
+INSERT dbo.Categorias (NombreCategoria, Descripcion) VALUES
+(N'Bebidas', N'Refrescos, cafés, tés, cervezas y otras bebidas'),
+(N'Condimentos', N'Salsas, especias y aderezos'),
+(N'Confituras', N'Mermeladas, dulces y postres'),
+(N'Lácteos', N'Quesos y otros productos lácteos'),
+(N'Carnes y Embutidos', N'Carnes preparadas y embutidos');
+GO
+IF NOT EXISTS (SELECT 1 FROM dbo.Proveedores)
+INSERT dbo.Proveedores (CompaniaNombre, NombreContacto, CargoContacto, Direccion, Ciudad, CodigoPostal, Pais, Telefono, Fax) VALUES
+(N'Lácteos García S.A.', N'Ana García', N'Gerente de Ventas', N'Av. Los Álamos 245', N'Lima', N'15024', N'Perú', N'511-4567890', N'511-4567891'),
+(N'Bebidas del Sur Ltda.', N'Carlos Ramírez', N'Jefe Comercial', N'Jr. Comercio 890', N'Arequipa', N'04001', N'Perú', N'054-223344', N'054-223345'),
+(N'Embutidos La Preferida', N'María Torres', N'Coordinadora de Distribución', N'Calle Las Flores 120', N'Trujillo', N'13001', N'Perú', N'044-556677', N'044-556678'),
+(N'Condimentos Andinos SAC', N'Jorge Quispe', N'Gerente General', N'Av. Industrial 500', N'Cusco', N'08001', N'Perú', N'084-778899', N'084-778900'),
+(N'Dulces del Valle E.I.R.L.', N'Lucía Fernández', N'Encargada de Ventas', N'Jr. San Martín 77', N'Chiclayo', N'14001', N'Perú', N'074-991122', N'074-991123');
+GO
+IF NOT EXISTS (SELECT 1 FROM dbo.Productos)
+INSERT dbo.Productos (NombreProducto, ProveedorID, CategoriaID, CantidadPorUnidad, PrecioUnidad, UnidadesEnExistencia, UnidadesEnPedido, NivelDeReorden, Descontinuado) VALUES
+(N'Café Andino Premium', 2, 1, N'500 g', 45.90, 120, 30, 20, 0),
+(N'Salsa de Ají Amarillo', 4, 2, N'300 ml', 12.50, 200, 50, 30, 0),
+(N'Mermelada de Aguaymanto', 5, 3, N'250 g', 15.00, 80, 20, 15, 0),
+(N'Queso Fresco Andino', 1, 4, N'1 kg', 22.00, 60, 10, 10, 0),
+(N'Chorizo Ahumado', 3, 5, N'500 g', 18.75, 90, 25, 20, 0);
+GO
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Clientes)
+INSERT dbo.Clientes (Empresa, NombreContacto, Ciudad, Pais, Telefono) VALUES
+(N'Comercial Andina SAC',N'Pedro Salazar',N'Lima',N'Perú',N'511-2345678'),
+(N'Supermercados del Norte',N'Rosa Medina',N'Trujillo',N'Perú',N'044-334455'),
+(N'Distribuidora Sureña EIRL',N'Luis Chávez',N'Arequipa',N'Perú',N'054-667788'),
+(N'Minimarket Central',N'Elena Rojas',N'Cusco',N'Perú',N'084-112233'),
+(N'Tiendas Express SAC',N'Miguel Ángel Paredes',N'Chiclayo',N'Perú',N'074-445566');
+GO
+IF NOT EXISTS (SELECT 1 FROM dbo.Empleados)
+INSERT dbo.Empleados (Nombre,Apellidos,Cargo,FechaNacimiento,FechaContratacion,Ciudad,Pais) VALUES
+(N'Juan',N'Pérez Gómez',N'Vendedor','1990-05-12','2020-01-15',N'Lima',N'Perú'),
+(N'María',N'López Díaz',N'Supervisora de Ventas','1988-09-23','2018-03-01',N'Lima',N'Perú'),
+(N'Carlos',N'Ruiz Mendoza',N'Vendedor','1992-02-17','2021-06-10',N'Arequipa',N'Perú'),
+(N'Sofía',N'Vargas Castro',N'Gerente Regional','1985-11-30','2015-08-20',N'Trujillo',N'Perú'),
+(N'Diego',N'Fernández Ríos',N'Vendedor','1995-07-08','2022-02-01',N'Cusco',N'Perú');
+GO
+IF NOT EXISTS (SELECT 1 FROM dbo.Transportistas)
+INSERT dbo.Transportistas (CompaniaNombre,Telefono) VALUES
+(N'Transportes Rápido SAC',N'511-8889900'),(N'Envíos Seguros EIRL',N'511-7776655'),
+(N'Logística del Pacífico',N'054-990011'),(N'Courier Nacional SA',N'044-223344'),
+(N'TransAndino Express',N'084-556677');
+GO
+IF NOT EXISTS (SELECT 1 FROM dbo.Pedidos)
+INSERT dbo.Pedidos (ClienteID,EmpleadoID,FechaPedido,FechaRequerida,FechaEnvio,TransportistaID,Destinatario,CiudadDestino,PaisDestino) VALUES
+(1,1,'2026-08-10','2026-08-20','2026-08-15',1,N'Comercial Andina SAC',N'Lima',N'Perú'),
+(2,3,'2026-08-12','2026-08-22','2026-08-18',3,N'Supermercados del Norte',N'Trujillo',N'Perú'),
+(3,2,'2026-08-15','2026-08-25',NULL,4,N'Distribuidora Sureña EIRL',N'Arequipa',N'Perú'),
+(4,4,'2026-08-20','2026-08-30','2026-08-26',5,N'Minimarket Central',N'Cusco',N'Perú'),
+(5,5,'2026-08-22','2026-09-01','2026-08-28',2,N'Tiendas Express SAC',N'Chiclayo',N'Perú');
+GO
+IF NOT EXISTS (SELECT 1 FROM dbo.DetallePedidos)
+INSERT dbo.DetallePedidos (PedidoID,ProductoID,PrecioUnidad,Cantidad,Descuento) VALUES
+(1,1,45.90,10,0),(2,2,12.50,25,0.05),(3,3,15,15,0),(4,4,22,8,0.10),(5,5,18.75,12,0);
+GO

@@ -1,0 +1,19 @@
+using System.Data;
+using Microsoft.Data.SqlClient;
+using NeptunoApp.Models;
+using static NeptunoApp.Data.RepositoryHelpers;
+namespace NeptunoApp.Data;
+public sealed class PedidoRepository(string cs):IPedidoRepository
+{
+ public async Task<List<Pedido>> ListarAsync(){await using var c=new SqlConnection(cs);await using var q=Procedure("dbo.usp_Pedido_Listar",c);await c.OpenAsync();await using var r=await q.ExecuteReaderAsync();var a=new List<Pedido>();while(await r.ReadAsync())a.Add(Map(r));return a;}
+ public async Task<int> CrearAsync(Pedido x){await using var c=new SqlConnection(cs);await using var q=Procedure("dbo.usp_Pedido_Crear",c);Add(q,x);await c.OpenAsync();return Convert.ToInt32(await q.ExecuteScalarAsync());}
+ public async Task ActualizarAsync(Pedido x){await using var c=new SqlConnection(cs);await using var q=Procedure("dbo.usp_Pedido_Actualizar",c);q.Parameters.Add("@PedidoID",SqlDbType.Int).Value=x.PedidoID;Add(q,x);await c.OpenAsync();await q.ExecuteNonQueryAsync();}
+ public async Task EliminarAsync(int id){await using var c=new SqlConnection(cs);await using var q=Procedure("dbo.usp_Pedido_Eliminar",c);q.Parameters.Add("@PedidoID",SqlDbType.Int).Value=id;await c.OpenAsync();await q.ExecuteNonQueryAsync();}
+ public Task<List<Cliente>> ListarClientesAsync()=>Catalog("dbo.usp_Cliente_Listar",r=>new Cliente(r.GetInt32(0),r.GetString(1)));
+ public Task<List<Empleado>> ListarEmpleadosAsync()=>Catalog("dbo.usp_Empleado_Listar",r=>new Empleado(r.GetInt32(0),r.GetString(1)));
+ public Task<List<Transportista>> ListarTransportistasAsync()=>Catalog("dbo.usp_Transportista_Listar",r=>new Transportista(r.GetInt32(0),r.GetString(1)));
+ public async Task<List<LineaReporte>> ReportarAsync(DateTime inicio,DateTime fin){await using var c=new SqlConnection(cs);await using var q=Procedure("dbo.usp_DetallePedido_ListarPorRangoFechas",c);q.Parameters.Add("@FechaInicio",SqlDbType.Date).Value=inicio.Date;q.Parameters.Add("@FechaFin",SqlDbType.Date).Value=fin.Date;await c.OpenAsync();await using var r=await q.ExecuteReaderAsync();var a=new List<LineaReporte>();while(await r.ReadAsync())a.Add(new(){PedidoID=r.GetInt32(0),FechaPedido=r.GetDateTime(1),NombreCliente=Text(r,"NombreCliente"),NombreProducto=r.GetString(3),PrecioUnidad=r.GetDecimal(4),Cantidad=r.GetInt16(5),Descuento=r.GetDecimal(6),Subtotal=r.GetDecimal(7)});return a;}
+ private async Task<List<T>> Catalog<T>(string sp,Func<SqlDataReader,T> map){await using var c=new SqlConnection(cs);await using var q=Procedure(sp,c);await c.OpenAsync();await using var r=await q.ExecuteReaderAsync();var a=new List<T>();while(await r.ReadAsync())a.Add(map(r));return a;}
+ private static void Add(SqlCommand q,Pedido x){q.Parameters.Add("@ClienteID",SqlDbType.Int).Value=Db(x.ClienteID);q.Parameters.Add("@EmpleadoID",SqlDbType.Int).Value=Db(x.EmpleadoID);q.Parameters.Add("@FechaPedido",SqlDbType.Date).Value=x.FechaPedido.Date;q.Parameters.Add("@FechaRequerida",SqlDbType.Date).Value=Db(x.FechaRequerida);q.Parameters.Add("@FechaEnvio",SqlDbType.Date).Value=Db(x.FechaEnvio);q.Parameters.Add("@TransportistaID",SqlDbType.Int).Value=Db(x.TransportistaID);q.Parameters.Add("@Destinatario",SqlDbType.NVarChar,60).Value=Db(x.Destinatario);q.Parameters.Add("@CiudadDestino",SqlDbType.NVarChar,30).Value=Db(x.CiudadDestino);q.Parameters.Add("@PaisDestino",SqlDbType.NVarChar,30).Value=Db(x.PaisDestino);}
+ private static Pedido Map(SqlDataReader r)=>new(){PedidoID=r.GetInt32(0),ClienteID=Int(r,"ClienteID"),EmpleadoID=Int(r,"EmpleadoID"),FechaPedido=r.GetDateTime(r.GetOrdinal("FechaPedido")),FechaRequerida=Date(r,"FechaRequerida"),FechaEnvio=Date(r,"FechaEnvio"),TransportistaID=Int(r,"TransportistaID"),Destinatario=Text(r,"Destinatario"),CiudadDestino=Text(r,"CiudadDestino"),PaisDestino=Text(r,"PaisDestino"),NombreCliente=Text(r,"NombreCliente"),NombreEmpleado=Text(r,"NombreEmpleado"),NombreTransportista=Text(r,"NombreTransportista"),Total=r.GetDecimal(r.GetOrdinal("Total"))};
+}

@@ -1,0 +1,30 @@
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ xmlns:vm="using:NeptunoApp.ViewModels" xmlns:views="using:NeptunoApp.Views"
+ x:Class="NeptunoApp.Views.MainWindow" x:DataType="vm:MainViewModel"
+ Title="Neptuno · Laboratorio ADO.NET" Width="1280" Height="820" MinWidth="1020" MinHeight="680" Background="#F1F5F9">
+ <Grid ColumnDefinitions="200,*">
+  <Border Background="#0F172A" Padding="18,28">
+   <Grid RowDefinitions="Auto,Auto,*">
+    <StackPanel Spacing="8">
+     <Border Width="48" Height="48" CornerRadius="13" Background="#0F8F83" HorizontalAlignment="Left"><TextBlock Text="N" Foreground="White" FontWeight="Bold" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+     <TextBlock Text="NEPTUNO" Foreground="White" FontSize="20" FontWeight="Bold" Margin="0,10,0,0"/>
+    </StackPanel>
+    <TextBlock Grid.Row="1" Text="MÓDULOS" Foreground="#64748B" FontSize="10" FontWeight="Bold" Margin="0,42,0,12"/>
+    <StackPanel Grid.Row="2" Spacing="7">
+     <Button Classes="nav" Classes.active="{Binding MostrarProductos}" Content="Productos" Command="{Binding VerProductosCommand}"/>
+     <Button Classes="nav" Classes.active="{Binding MostrarCategorias}" Content="Categorías" Command="{Binding VerCategoriasCommand}"/>
+     <Button Classes="nav" Classes.active="{Binding MostrarProveedores}" Content="Proveedores" Command="{Binding VerProveedoresCommand}"/>
+     <Button Classes="nav" Classes.active="{Binding MostrarPedidos}" Content="Pedidos" Command="{Binding VerPedidosCommand}"/>
+     <Button Classes="nav" Classes.active="{Binding MostrarReportes}" Content="Reporte por fechas" Command="{Binding VerReportesCommand}"/>
+    </StackPanel>
+   </Grid>
+  </Border>
+  <Grid Grid.Column="1">
+   <Grid IsVisible="{Binding MostrarProductos}"><views:ProductosView DataContext="{Binding Productos}"/></Grid>
+   <Grid IsVisible="{Binding MostrarCategorias}"><views:CategoriasView DataContext="{Binding Categorias}"/></Grid>
+   <Grid IsVisible="{Binding MostrarProveedores}"><views:ProveedoresView DataContext="{Binding Proveedores}"/></Grid>
+   <Grid IsVisible="{Binding MostrarPedidos}"><views:PedidosView DataContext="{Binding Pedidos}"/></Grid>
+   <Grid IsVisible="{Binding MostrarReportes}"><views:ReportesView DataContext="{Binding Reportes}"/></Grid>
+  </Grid>
+ </Grid>
+</Window>
