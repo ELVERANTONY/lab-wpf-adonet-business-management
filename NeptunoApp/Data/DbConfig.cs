@@ -36,7 +36,7 @@ public static class DbConfig
         }
         catch { }
 
-        // 4. Fallback estándar para Docker / Local
-        return "Server=localhost,1433;Database=NeptunoDB;User Id=sa;Password=Neptuno_Strong_Passw0rd!;TrustServerCertificate=True;Connect Timeout=5;";
+        // 4. Fallback estándar para Localhost Windows
+        return "Server=localhost;Database=NeptunoDB;Integrated Security=True;TrustServerCertificate=True;Connect Timeout=5;";
     }
 }
