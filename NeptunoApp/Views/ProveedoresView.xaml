@@ -30,8 +30,8 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Labels -->
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Nombre del Contacto" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,4"/>
-                <TextBlock Grid.Row="0" Grid.Column="2" Text="Ciudad" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,4"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Nombre del Contacto" Foreground="Gray" Margin="0,0,0,4"/>
+                <TextBlock Grid.Row="0" Grid.Column="2" Text="Ciudad" Foreground="Gray" Margin="0,0,0,4"/>
 
                 <!-- Inputs -->
                 <TextBox Grid.Row="1" Grid.Column="0" Text="{Binding FiltroContacto, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center"/>
