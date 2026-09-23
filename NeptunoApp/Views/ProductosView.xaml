@@ -82,21 +82,26 @@
                     </StackPanel>
                     
                     <!-- Row 2: Status, Messages, and Buttons -->
-                    <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="7" Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0,6,0,0">
-                        <CheckBox Content="Descontinuado" IsChecked="{Binding Descontinuado}" VerticalAlignment="Center" Margin="0,0,24,0"/>
+                    <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="7" Margin="0,6,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
                         
-                        <TextBlock Text="{Binding MensajeError}" Foreground="#DC2626" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,16,0" FontWeight="SemiBold"/>
-                        <TextBlock Text="{Binding MensajeExito}" Foreground="#0F766E" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,16,0" FontWeight="SemiBold"/>
-
-                        <!-- Pushes the buttons to the right -->
-                        <Border HorizontalAlignment="Stretch" MinWidth="10"/>
+                        <CheckBox Grid.Column="0" Content="Descontinuado" IsChecked="{Binding Descontinuado}" VerticalAlignment="Center" Margin="0,0,24,0"/>
+                        
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding MensajeError}" Foreground="#DC2626" TextWrapping="Wrap" Margin="0,0,16,0" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding MensajeExito}" Foreground="#0F766E" TextWrapping="Wrap" Margin="0,0,16,0" FontWeight="SemiBold"/>
+                        </StackPanel>
 
                         <!-- Buttons aligned to the right -->
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="auto,0,0,0">
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
                             <Button Content="Limpiar Formulario" Command="{Binding NuevoCommand}" Margin="0,0,12,0"/>
                             <Button Style="{StaticResource OrangeButton}" Content="Guardar Producto" Command="{Binding GuardarCommand}" Padding="24,8"/>
                         </StackPanel>
-                    </StackPanel>
+                    </Grid>
                 </Grid>
             </StackPanel>
         </Border>
