@@ -51,8 +51,8 @@ GO
 CREATE OR ALTER PROCEDURE dbo.usp_Proveedor_Listar
 AS
 BEGIN
-    SELECT ProveedorID, NombreCompania, NombreContacto, CargoContacto, 
-           Direccion, Ciudad, Region, CodPostal, Pais, Telefono, Fax
+    SELECT ProveedorID, CompaniaNombre AS NombreCompania, NombreContacto, CargoContacto, 
+           Direccion, Ciudad, CodigoPostal AS CodPostal, Pais, Telefono, Fax
     FROM Proveedores;
 END
 GO
@@ -62,8 +62,8 @@ CREATE OR ALTER PROCEDURE dbo.usp_Proveedor_Buscar
     @Ciudad NVARCHAR(30) = NULL
 AS
 BEGIN
-    SELECT ProveedorID, NombreCompania, NombreContacto, CargoContacto, 
-           Direccion, Ciudad, Region, CodPostal, Pais, Telefono, Fax
+    SELECT ProveedorID, CompaniaNombre AS NombreCompania, NombreContacto, CargoContacto, 
+           Direccion, Ciudad, CodigoPostal AS CodPostal, Pais, Telefono, Fax
     FROM Proveedores
     WHERE (@NombreContacto IS NULL OR NombreContacto LIKE '%' + @NombreContacto + '%')
       AND (@Ciudad IS NULL OR Ciudad LIKE '%' + @Ciudad + '%');
@@ -82,7 +82,7 @@ CREATE OR ALTER PROCEDURE dbo.usp_Proveedor_Crear
     @Fax NVARCHAR(24) = NULL
 AS
 BEGIN
-    INSERT INTO Proveedores (NombreCompania, NombreContacto, CargoContacto, Direccion, Ciudad, CodPostal, Pais, Telefono, Fax)
+    INSERT INTO Proveedores (CompaniaNombre, NombreContacto, CargoContacto, Direccion, Ciudad, CodigoPostal, Pais, Telefono, Fax)
     VALUES (@CompaniaNombre, @NombreContacto, @CargoContacto, @Direccion, @Ciudad, @CodigoPostal, @Pais, @Telefono, @Fax);
     SELECT SCOPE_IDENTITY();
 END
@@ -102,12 +102,12 @@ CREATE OR ALTER PROCEDURE dbo.usp_Proveedor_Actualizar
 AS
 BEGIN
     UPDATE Proveedores
-    SET NombreCompania = @CompaniaNombre,
+    SET CompaniaNombre = @CompaniaNombre,
         NombreContacto = @NombreContacto,
         CargoContacto = @CargoContacto,
         Direccion = @Direccion,
         Ciudad = @Ciudad,
-        CodPostal = @CodigoPostal,
+        CodigoPostal = @CodigoPostal,
         Pais = @Pais,
         Telefono = @Telefono,
         Fax = @Fax
@@ -132,7 +132,7 @@ BEGIN
     SELECT p.ProductoID, p.NombreProducto, p.ProveedorID, p.CategoriaID, 
            p.CantidadPorUnidad, p.PrecioUnidad, p.UnidadesEnExistencia, 
            p.UnidadesEnPedido, p.NivelDeReorden, p.Descontinuado,
-           c.NombreCategoria, pr.NombreCompania AS NombreProveedor
+           c.NombreCategoria, pr.CompaniaNombre AS NombreProveedor
     FROM Productos p
     LEFT JOIN Categorias c ON p.CategoriaID = c.CategoriaID
     LEFT JOIN Proveedores pr ON p.ProveedorID = pr.ProveedorID;
@@ -198,7 +198,7 @@ GO
 CREATE OR ALTER PROCEDURE dbo.usp_Cliente_Listar
 AS
 BEGIN
-    SELECT ClienteID, NombreCompania FROM Clientes;
+    SELECT ClienteID, Empresa AS NombreCompania FROM Clientes;
 END
 GO
 
@@ -212,7 +212,7 @@ GO
 CREATE OR ALTER PROCEDURE dbo.usp_Transportista_Listar
 AS
 BEGIN
-    SELECT TransportistaID, NombreCompania FROM Transportistas;
+    SELECT TransportistaID, CompaniaNombre AS NombreCompania FROM Transportistas;
 END
 GO
 
@@ -223,10 +223,10 @@ CREATE OR ALTER PROCEDURE dbo.usp_Pedido_Listar
 AS
 BEGIN
     SELECT p.PedidoID, p.ClienteID, p.EmpleadoID, p.FechaPedido, p.FechaRequerida, p.FechaEnvio, 
-           p.TransportistaID, p.Cargo, p.Destinatario, p.CiudadDestino, p.PaisDestino,
-           c.NombreCompania AS NombreCliente, e.Apellidos + ', ' + e.Nombre AS NombreEmpleado,
-           t.NombreCompania AS NombreTransportista,
-           COALESCE((SELECT SUM(PrecioUnidad * Cantidad * (1 - Descuento)) FROM Detalles_de_pedidos WHERE PedidoID = p.PedidoID), 0) AS Total
+           p.TransportistaID, 0 AS Cargo, p.Destinatario, p.CiudadDestino, p.PaisDestino,
+           c.Empresa AS NombreCliente, e.Apellidos + ', ' + e.Nombre AS NombreEmpleado,
+           t.CompaniaNombre AS NombreTransportista,
+           COALESCE((SELECT SUM(PrecioUnidad * Cantidad * (1 - Descuento)) FROM DetallePedidos WHERE PedidoID = p.PedidoID), 0) AS Total
     FROM Pedidos p
     LEFT JOIN Clientes c ON p.ClienteID = c.ClienteID
     LEFT JOIN Empleados e ON p.EmpleadoID = e.EmpleadoID
@@ -235,7 +235,7 @@ END
 GO
 
 CREATE OR ALTER PROCEDURE dbo.usp_Pedido_Crear
-    @ClienteID NCHAR(5) = NULL,
+    @ClienteID INT = NULL,
     @EmpleadoID INT = NULL,
     @FechaPedido DATETIME = NULL,
     @FechaRequerida DATETIME = NULL,
@@ -247,15 +247,15 @@ CREATE OR ALTER PROCEDURE dbo.usp_Pedido_Crear
     @PaisDestino NVARCHAR(30) = NULL
 AS
 BEGIN
-    INSERT INTO Pedidos (ClienteID, EmpleadoID, FechaPedido, FechaRequerida, FechaEnvio, TransportistaID, Cargo, Destinatario, CiudadDestino, PaisDestino)
-    VALUES (@ClienteID, @EmpleadoID, @FechaPedido, @FechaRequerida, @FechaEnvio, @TransportistaID, @Cargo, @Destinatario, @CiudadDestino, @PaisDestino);
+    INSERT INTO Pedidos (ClienteID, EmpleadoID, FechaPedido, FechaRequerida, FechaEnvio, TransportistaID, Destinatario, CiudadDestino, PaisDestino)
+    VALUES (@ClienteID, @EmpleadoID, @FechaPedido, @FechaRequerida, @FechaEnvio, @TransportistaID, @Destinatario, @CiudadDestino, @PaisDestino);
     SELECT SCOPE_IDENTITY();
 END
 GO
 
 CREATE OR ALTER PROCEDURE dbo.usp_Pedido_Actualizar
     @PedidoID INT,
-    @ClienteID NCHAR(5) = NULL,
+    @ClienteID INT = NULL,
     @EmpleadoID INT = NULL,
     @FechaPedido DATETIME = NULL,
     @FechaRequerida DATETIME = NULL,
@@ -274,7 +274,6 @@ BEGIN
         FechaRequerida = @FechaRequerida,
         FechaEnvio = @FechaEnvio,
         TransportistaID = @TransportistaID,
-        Cargo = @Cargo,
         Destinatario = @Destinatario,
         CiudadDestino = @CiudadDestino,
         PaisDestino = @PaisDestino
@@ -286,7 +285,7 @@ CREATE OR ALTER PROCEDURE dbo.usp_Pedido_Eliminar
     @PedidoID INT
 AS
 BEGIN
-    DELETE FROM Detalles_de_pedidos WHERE PedidoID = @PedidoID;
+    DELETE FROM DetallePedidos WHERE PedidoID = @PedidoID;
     DELETE FROM Pedidos WHERE PedidoID = @PedidoID;
 END
 GO
@@ -296,12 +295,12 @@ CREATE OR ALTER PROCEDURE dbo.usp_DetallePedido_ListarPorRangoFechas
     @FechaFin DATETIME
 AS
 BEGIN
-    SELECT p.PedidoID, p.FechaPedido, c.NombreCompania AS NombreCliente, 
+    SELECT p.PedidoID, p.FechaPedido, c.Empresa AS NombreCliente, 
            pr.NombreProducto, d.PrecioUnidad, d.Cantidad, d.Descuento,
            CAST((d.PrecioUnidad * d.Cantidad * (1 - d.Descuento)) AS DECIMAL(18,2)) AS Subtotal
     FROM Pedidos p
     INNER JOIN Clientes c ON p.ClienteID = c.ClienteID
-    INNER JOIN Detalles_de_pedidos d ON p.PedidoID = d.PedidoID
+    INNER JOIN DetallePedidos d ON p.PedidoID = d.PedidoID
     INNER JOIN Productos pr ON d.ProductoID = pr.ProductoID
     WHERE p.FechaPedido BETWEEN @FechaInicio AND @FechaFin;
 END

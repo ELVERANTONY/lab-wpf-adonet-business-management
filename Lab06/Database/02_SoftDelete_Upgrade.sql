@@ -33,7 +33,7 @@ BEGIN
     SELECT p.ProductoID, p.NombreProducto, p.ProveedorID, p.CategoriaID, 
            p.CantidadPorUnidad, p.PrecioUnidad, p.UnidadesEnExistencia, 
            p.UnidadesEnPedido, p.NivelDeReorden, p.Descontinuado,
-           c.NombreCategoria, pr.NombreCompania AS NombreProveedor
+           c.NombreCategoria, pr.CompaniaNombre AS NombreProveedor
     FROM Productos p
     LEFT JOIN Categorias c ON p.CategoriaID = c.CategoriaID
     LEFT JOIN Proveedores pr ON p.ProveedorID = pr.ProveedorID
@@ -71,8 +71,8 @@ GO
 CREATE OR ALTER PROCEDURE dbo.usp_Proveedor_Listar
 AS
 BEGIN
-    SELECT ProveedorID, NombreCompania, NombreContacto, CargoContacto, 
-           Direccion, Ciudad, Region, CodPostal, Pais, Telefono, Fax
+    SELECT ProveedorID, CompaniaNombre AS NombreCompania, NombreContacto, CargoContacto, 
+           Direccion, Ciudad, CodigoPostal AS CodPostal, Pais, Telefono, Fax
     FROM Proveedores
     WHERE Activo = 1;
 END
@@ -87,12 +87,12 @@ END
 GO
 
 CREATE OR ALTER PROCEDURE dbo.usp_Proveedor_Buscar
-    @NombreContacto NVARCHAR(30) = NULL,
-    @Ciudad NVARCHAR(15) = NULL
+    @NombreContacto NVARCHAR(40) = NULL,
+    @Ciudad NVARCHAR(30) = NULL
 AS
 BEGIN
-    SELECT ProveedorID, NombreCompania, NombreContacto, CargoContacto, 
-           Direccion, Ciudad, Region, CodPostal, Pais, Telefono, Fax
+    SELECT ProveedorID, CompaniaNombre AS NombreCompania, NombreContacto, CargoContacto, 
+           Direccion, Ciudad, CodigoPostal AS CodPostal, Pais, Telefono, Fax
     FROM Proveedores
     WHERE Activo = 1
       AND (@NombreContacto IS NULL OR NombreContacto LIKE '%' + @NombreContacto + '%')
@@ -104,15 +104,15 @@ GO
 CREATE OR ALTER PROCEDURE dbo.usp_Pedido_Listar
 AS
 BEGIN
-    SELECT p.PedidoID, p.ClienteID, p.EmpleadoID, p.FechaPedido, p.FechaEntrega, p.FechaEnvio, 
-           p.FormaEnvio, p.Cargo, p.Destinatario, p.DireccionDestinatario, p.CiudadDestinatario, 
-           p.RegionDestinatario, p.CodPostalDestinatario, p.PaisDestinatario,
-           c.NombreCompania AS NombreCliente, e.Apellidos + ', ' + e.Nombre AS NombreEmpleado,
-           ev.NombreCompania AS NombreCompaniaEnvio
+    SELECT p.PedidoID, p.ClienteID, p.EmpleadoID, p.FechaPedido, p.FechaRequerida, p.FechaEnvio, 
+           p.TransportistaID, 0 AS Cargo, p.Destinatario, p.CiudadDestino, p.PaisDestino,
+           c.Empresa AS NombreCliente, e.Apellidos + ', ' + e.Nombre AS NombreEmpleado,
+           t.CompaniaNombre AS NombreTransportista,
+           COALESCE((SELECT SUM(PrecioUnidad * Cantidad * (1 - Descuento)) FROM DetallePedidos WHERE PedidoID = p.PedidoID), 0) AS Total
     FROM Pedidos p
     LEFT JOIN Clientes c ON p.ClienteID = c.ClienteID
     LEFT JOIN Empleados e ON p.EmpleadoID = e.EmpleadoID
-    LEFT JOIN companiasdeenvios ev ON p.FormaEnvio = ev.IdCompaniaEnvio
+    LEFT JOIN Transportistas t ON p.TransportistaID = t.TransportistaID
     WHERE p.Activo = 1;
 END
 GO
@@ -126,16 +126,17 @@ END
 GO
 
 -- 6. Modificar Procedimiento de Reportes (Filtro Activo=1)
-CREATE OR ALTER PROCEDURE dbo.usp_Reporte_PedidosPorFecha
+CREATE OR ALTER PROCEDURE dbo.usp_DetallePedido_ListarPorRangoFechas
     @FechaInicio DATETIME,
     @FechaFin DATETIME
 AS
 BEGIN
-    SELECT p.PedidoID, p.FechaPedido, c.NombreCompania AS ClienteNombre, 
-           pr.NombreProducto, d.PrecioUnidad, d.Cantidad, d.Descuento
+    SELECT p.PedidoID, p.FechaPedido, c.Empresa AS NombreCliente, 
+           pr.NombreProducto, d.PrecioUnidad, d.Cantidad, d.Descuento,
+           CAST((d.PrecioUnidad * d.Cantidad * (1 - d.Descuento)) AS DECIMAL(18,2)) AS Subtotal
     FROM Pedidos p
     INNER JOIN Clientes c ON p.ClienteID = c.ClienteID
-    INNER JOIN [Detalles de pedidos] d ON p.PedidoID = d.PedidoID
+    INNER JOIN DetallePedidos d ON p.PedidoID = d.PedidoID
     INNER JOIN Productos pr ON d.ProductoID = pr.ProductoID
     WHERE p.Activo = 1
       AND p.FechaPedido BETWEEN @FechaInicio AND @FechaFin;
