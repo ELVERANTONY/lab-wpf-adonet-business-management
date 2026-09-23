@@ -14,10 +14,11 @@ public partial class MainViewModel : ObservableObject
 
     public MainViewModel()
     {
-        var prodRepo = new ProductoRepository();
-        var catRepo = new CategoriaRepository();
-        var provRepo = new ProveedorRepository();
-        var pedRepo = new PedidoRepository();
+        var cs = DbConfig.GetConnectionString();
+        var prodRepo = new ProductoRepository(cs);
+        var catRepo = new CategoriaRepository(cs);
+        var provRepo = new ProveedorRepository(cs);
+        var pedRepo = new PedidoRepository(cs);
 
         Productos = new ProductosViewModel(prodRepo);
         Categorias = new CategoriasViewModel(catRepo);
