@@ -60,7 +60,7 @@
 
                 <!-- Navigation Items -->
                 <StackPanel DockPanel.Dock="Top">
-                    <Button Style="{StaticResource SidebarNavButtonStyle}" Content="Productos" Command="{Binding VerProductosCommand}">
+                    <Button Content="Productos" Command="{Binding VerProductosCommand}">
                         <Button.Style>
                             <Style TargetType="Button" BasedOn="{StaticResource SidebarNavButtonStyle}">
                                 <Style.Triggers>
@@ -73,7 +73,7 @@
                         </Button.Style>
                     </Button>
 
-                    <Button Style="{StaticResource SidebarNavButtonStyle}" Content="Categorías" Command="{Binding VerCategoriasCommand}">
+                    <Button Content="Categorías" Command="{Binding VerCategoriasCommand}">
                         <Button.Style>
                             <Style TargetType="Button" BasedOn="{StaticResource SidebarNavButtonStyle}">
                                 <Style.Triggers>
@@ -86,7 +86,7 @@
                         </Button.Style>
                     </Button>
 
-                    <Button Style="{StaticResource SidebarNavButtonStyle}" Content="Proveedores" Command="{Binding VerProveedoresCommand}">
+                    <Button Content="Proveedores" Command="{Binding VerProveedoresCommand}">
                         <Button.Style>
                             <Style TargetType="Button" BasedOn="{StaticResource SidebarNavButtonStyle}">
                                 <Style.Triggers>
@@ -99,7 +99,7 @@
                         </Button.Style>
                     </Button>
 
-                    <Button Style="{StaticResource SidebarNavButtonStyle}" Content="Pedidos" Command="{Binding VerPedidosCommand}">
+                    <Button Content="Pedidos" Command="{Binding VerPedidosCommand}">
                         <Button.Style>
                             <Style TargetType="Button" BasedOn="{StaticResource SidebarNavButtonStyle}">
                                 <Style.Triggers>
@@ -112,7 +112,7 @@
                         </Button.Style>
                     </Button>
 
-                    <Button Style="{StaticResource SidebarNavButtonStyle}" Content="Reporte por fechas" Command="{Binding VerReportesCommand}">
+                    <Button Content="Reporte por fechas" Command="{Binding VerReportesCommand}">
                         <Button.Style>
                             <Style TargetType="Button" BasedOn="{StaticResource SidebarNavButtonStyle}">
                                 <Style.Triggers>
