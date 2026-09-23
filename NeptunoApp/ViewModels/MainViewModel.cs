@@ -12,6 +12,9 @@ public partial class MainViewModel : ObservableObject
     public PedidosViewModel Pedidos { get; }
     public ReportesViewModel Reportes { get; }
 
+    [ObservableProperty] private object? vistaActual;
+    [ObservableProperty] private string paginaActual = "Productos";
+
     public MainViewModel()
     {
         var cs = DbConfig.GetConnectionString();
@@ -25,6 +28,9 @@ public partial class MainViewModel : ObservableObject
         Proveedores = new ProveedoresViewModel(provRepo);
         Pedidos = new PedidosViewModel(pedRepo);
         Reportes = new ReportesViewModel(pedRepo);
+
+        VistaActual = Productos;
+        PaginaActual = "Productos";
 
         // Cargar datos iniciales
         _ = Productos.CargarCommand.ExecuteAsync(null);
@@ -45,27 +51,42 @@ public partial class MainViewModel : ObservableObject
         Proveedores = proveedores;
         Pedidos = pedidos;
         Reportes = reportes;
+        VistaActual = productos;
+        PaginaActual = "Productos";
     }
 
-    [ObservableProperty] private string paginaActual = "Productos";
-    public bool MostrarProductos => PaginaActual == "Productos";
-    public bool MostrarCategorias => PaginaActual == "Categorias";
-    public bool MostrarProveedores => PaginaActual == "Proveedores";
-    public bool MostrarPedidos => PaginaActual == "Pedidos";
-    public bool MostrarReportes => PaginaActual == "Reportes";
-
-    partial void OnPaginaActualChanged(string value)
+    [RelayCommand]
+    private void VerProductos()
     {
-        OnPropertyChanged(nameof(MostrarProductos));
-        OnPropertyChanged(nameof(MostrarCategorias));
-        OnPropertyChanged(nameof(MostrarProveedores));
-        OnPropertyChanged(nameof(MostrarPedidos));
-        OnPropertyChanged(nameof(MostrarReportes));
+        VistaActual = Productos;
+        PaginaActual = "Productos";
     }
 
-    [RelayCommand] private void VerProductos() => PaginaActual = "Productos";
-    [RelayCommand] private void VerCategorias() => PaginaActual = "Categorias";
-    [RelayCommand] private void VerProveedores() => PaginaActual = "Proveedores";
-    [RelayCommand] private void VerPedidos() => PaginaActual = "Pedidos";
-    [RelayCommand] private void VerReportes() => PaginaActual = "Reportes";
+    [RelayCommand]
+    private void VerCategorias()
+    {
+        VistaActual = Categorias;
+        PaginaActual = "Categorias";
+    }
+
+    [RelayCommand]
+    private void VerProveedores()
+    {
+        VistaActual = Proveedores;
+        PaginaActual = "Proveedores";
+    }
+
+    [RelayCommand]
+    private void VerPedidos()
+    {
+        VistaActual = Pedidos;
+        PaginaActual = "Pedidos";
+    }
+
+    [RelayCommand]
+    private void VerReportes()
+    {
+        VistaActual = Reportes;
+        PaginaActual = "Reportes";
+    }
 }

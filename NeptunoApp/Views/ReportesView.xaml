@@ -10,15 +10,15 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Grid Grid.Row="0" Margin="0,0,0,12">
+        <Grid Grid.Row="0" Margin="0,0,0,14">
             <StackPanel VerticalAlignment="Center">
-                <TextBlock Text="Reporte de Detalles de Pedidos" FontSize="22" FontWeight="Bold"/>
-                <TextBlock Text="Consulta de líneas de venta mediante INNER JOIN y filtrado por rango de fechas" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" Margin="0,2,0,0"/>
+                <TextBlock Text="Reporte de detalles de pedidos" FontSize="22" FontWeight="Bold"/>
+                <TextBlock Text="Consulta mediante INNER JOIN y rango de fechas" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" Margin="0,2,0,0"/>
             </StackPanel>
         </Grid>
 
         <!-- Date Range Filter Card -->
-        <Border Grid.Row="1" Background="{StaticResource CardBgBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
+        <Border Grid.Row="1" Background="{StaticResource CardBgBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="10" Padding="16" Margin="0,0,0,16">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -42,14 +42,14 @@
                     <DatePicker SelectedDate="{Binding FechaFin}"/>
                 </StackPanel>
 
-                <Button Grid.Column="4" Style="{StaticResource OrangeButton}" Content="📊 Consultar Reporte" Command="{Binding ConsultarCommand}" VerticalAlignment="Bottom" Padding="18,8"/>
+                <Button Grid.Column="4" Style="{StaticResource OrangeButton}" Content="📊 Consultar Reporte" Command="{Binding ConsultarCommand}" VerticalAlignment="Bottom" Padding="22,8"/>
 
                 <TextBlock Grid.Row="1" Grid.ColumnSpan="5" Text="{Binding Mensaje}" Foreground="#0F766E" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,10,0,0"/>
             </Grid>
         </Border>
 
         <!-- Grid Results Card -->
-        <Border Grid.Row="2" Background="{StaticResource CardBgBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="14">
+        <Border Grid.Row="2" Background="{StaticResource CardBgBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12" Padding="14">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -73,7 +73,7 @@
                 </DataGrid>
 
                 <!-- Total Footer -->
-                <Border Grid.Row="2" Background="#F8FAFC" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="6" Padding="14,10" Margin="0,12,0,0">
+                <Border Grid.Row="2" Background="#F8FAFC" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16,10" Margin="0,12,0,0">
                     <TextBlock Text="{Binding Total, StringFormat='Total acumulado en el período: S/ {0:N2}'}" FontSize="15" FontWeight="Bold" Foreground="{StaticResource PrimaryBrush}" HorizontalAlignment="Right"/>
                 </Border>
             </Grid>
