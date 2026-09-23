@@ -16,7 +16,7 @@
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="#94A3B8"/>
+            <Setter Property="Foreground" Value="#475569"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Margin" Value="0,3"/>
             <Setter Property="Template">
@@ -30,8 +30,8 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#1E293B"/>
-                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="Background" Value="#F1F5F9"/>
+                    <Setter Property="Foreground" Value="#0F172A"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -51,7 +51,7 @@
                     <Border Width="46" Height="46" CornerRadius="12" Background="{StaticResource PrimaryBrush}" HorizontalAlignment="Left">
                         <TextBlock Text="N" Foreground="White" FontWeight="Bold" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
-                    <TextBlock Text="NEPTUNO" Foreground="White" FontSize="19" FontWeight="Bold" Margin="0,14,0,2"/>
+                    <TextBlock Text="NEPTUNO" Foreground="#0F172A" FontSize="19" FontWeight="Bold" Margin="0,14,0,2"/>
                     <TextBlock Text="Sistema de Gestión" Foreground="#64748B" FontSize="11"/>
                 </StackPanel>
 

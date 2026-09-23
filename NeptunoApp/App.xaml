@@ -32,8 +32,8 @@
             <SolidColorBrush x:Key="OrangeHoverBrush" Color="#EA580C"/>
             <SolidColorBrush x:Key="DangerBrush" Color="#DC2626"/>
             <SolidColorBrush x:Key="DangerHoverBrush" Color="#B91C1C"/>
-            <SolidColorBrush x:Key="SidebarBgBrush" Color="#0B132B"/>
-            <SolidColorBrush x:Key="ContentBgBrush" Color="#F8FAFC"/>
+            <SolidColorBrush x:Key="SidebarBgBrush" Color="#FFFFFF"/>
+            <SolidColorBrush x:Key="ContentBgBrush" Color="#F1F5F9"/>
             <SolidColorBrush x:Key="CardBgBrush" Color="#FFFFFF"/>
             <SolidColorBrush x:Key="BorderBrush" Color="#CBD5E1"/>
             <SolidColorBrush x:Key="TextPrimaryBrush" Color="#0F172A"/>
