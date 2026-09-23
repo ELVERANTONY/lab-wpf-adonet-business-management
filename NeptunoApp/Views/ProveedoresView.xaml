@@ -15,6 +15,10 @@
         <!-- Search Bar Card -->
         <Border Grid.Row="1" Background="{StaticResource CardBgBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="10" Padding="14" Margin="0,0,0,16">
             <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="12"/>
@@ -25,10 +29,15 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBox Grid.Column="0" Text="{Binding FiltroContacto, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center"/>
-                <TextBox Grid.Column="2" Text="{Binding FiltroCiudad, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center"/>
-                <Button Grid.Column="4" Style="{StaticResource PrimaryButton}" Content="Buscar" Command="{Binding BuscarCommand}" Padding="20,7"/>
-                <Button Grid.Column="6" Content="Limpiar" Command="{Binding LimpiarBusquedaCommand}" Padding="16,7"/>
+                <!-- Labels -->
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Nombre del Contacto" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,4"/>
+                <TextBlock Grid.Row="0" Grid.Column="2" Text="Ciudad" Foreground="{StaticResource MutedTextBrush}" Margin="0,0,0,4"/>
+
+                <!-- Inputs -->
+                <TextBox Grid.Row="1" Grid.Column="0" Text="{Binding FiltroContacto, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center"/>
+                <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding FiltroCiudad, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center"/>
+                <Button Grid.Row="1" Grid.Column="4" Style="{StaticResource PrimaryButton}" Content="Buscar" Command="{Binding BuscarCommand}" Padding="20,7"/>
+                <Button Grid.Row="1" Grid.Column="6" Content="Limpiar" Command="{Binding LimpiarBusquedaCommand}" Padding="16,7"/>
             </Grid>
         </Border>
 
