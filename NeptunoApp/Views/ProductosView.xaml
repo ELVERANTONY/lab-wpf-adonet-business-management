@@ -5,6 +5,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -14,113 +15,119 @@
                 <TextBlock Text="Mantenimiento de productos" FontSize="22" FontWeight="Bold"/>
                 <TextBlock Text="Catálogo, precios e inventario" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" Margin="0,2,0,0"/>
             </StackPanel>
-            <Button Style="{StaticResource PrimaryButton}" Content="Actualizar" Command="{Binding CargarCommand}" HorizontalAlignment="Right" VerticalAlignment="Center" Padding="18,7"/>
+            <Button Style="{StaticResource PrimaryButton}" Content="Actualizar Grilla" Command="{Binding CargarCommand}" HorizontalAlignment="Right" VerticalAlignment="Center" Padding="18,7"/>
         </Grid>
 
-        <!-- Main Content -->
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="330"/>
-                <ColumnDefinition Width="16"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+        <!-- Top Form Card -->
+        <Border Grid.Row="1" Background="{StaticResource CardBgBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12" Padding="18" Margin="0,0,0,16">
+            <StackPanel>
+                <TextBlock Text="Datos del producto" FontSize="16" FontWeight="Bold" Margin="0,0,0,12"/>
 
-            <!-- Form Card -->
-            <Border Grid.Column="0" Background="{StaticResource CardBgBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12" Padding="18">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <StackPanel>
-                        <TextBlock Text="Datos del producto" FontSize="16" FontWeight="Bold" Margin="0,0,0,12"/>
-
-                        <TextBlock Text="Nombre *" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,4"/>
-                        <TextBox Text="{Binding NombreProducto, UpdateSourceTrigger=PropertyChanged}" MaxLength="60" Margin="0,0,0,8"/>
-
-                        <TextBlock Text="Categoría *" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,4"/>
-                        <ComboBox ItemsSource="{Binding Categorias}" SelectedItem="{Binding CategoriaSeleccionada}" DisplayMemberPath="NombreCategoria" Margin="0,0,0,8"/>
-
-                        <TextBlock Text="Proveedor *" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,4"/>
-                        <ComboBox ItemsSource="{Binding Proveedores}" SelectedItem="{Binding ProveedorSeleccionado}" DisplayMemberPath="CompaniaNombre" Margin="0,0,0,8"/>
-
-                        <TextBlock Text="Cantidad por unidad" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,4"/>
-                        <TextBox Text="{Binding CantidadPorUnidad, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,8"/>
-
-                        <Grid Margin="0,0,0,8">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="8"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Grid.Column="0">
-                                <TextBlock Text="Precio S/" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,4"/>
-                                <TextBox Text="{Binding PrecioUnidad, UpdateSourceTrigger=PropertyChanged}"/>
-                            </StackPanel>
-                            <StackPanel Grid.Column="2">
-                                <TextBlock Text="Existencia" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,4"/>
-                                <TextBox Text="{Binding UnidadesEnExistencia, UpdateSourceTrigger=PropertyChanged}"/>
-                            </StackPanel>
-                        </Grid>
-
-                        <Grid Margin="0,0,0,8">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="8"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Grid.Column="0">
-                                <TextBlock Text="En pedido" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,4"/>
-                                <TextBox Text="{Binding UnidadesEnPedido, UpdateSourceTrigger=PropertyChanged}"/>
-                            </StackPanel>
-                            <StackPanel Grid.Column="2">
-                                <TextBlock Text="Reorden" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,4"/>
-                                <TextBox Text="{Binding NivelDeReorden, UpdateSourceTrigger=PropertyChanged}"/>
-                            </StackPanel>
-                        </Grid>
-
-                        <CheckBox Content="Descontinuado" IsChecked="{Binding Descontinuado}" Margin="0,4,0,8"/>
-
-                        <TextBlock Text="{Binding MensajeError}" Foreground="#DC2626" TextWrapping="Wrap" Margin="0,0,0,4" FontWeight="SemiBold"/>
-                        <TextBlock Text="{Binding MensajeExito}" Foreground="#0F766E" TextWrapping="Wrap" Margin="0,0,0,8" FontWeight="SemiBold"/>
-
-                        <Grid Margin="0,6,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="8"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Button Grid.Column="0" Content="Nuevo / Cancelar" Command="{Binding NuevoCommand}"/>
-                            <Button Grid.Column="2" Style="{StaticResource OrangeButton}" Content="Guardar" Command="{Binding GuardarCommand}"/>
-                        </Grid>
-                    </StackPanel>
-                </ScrollViewer>
-            </Border>
-
-            <!-- Grid Card -->
-            <Border Grid.Column="2" Background="{StaticResource CardBgBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12" Padding="14">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-                    <ProgressBar Grid.Row="0" IsIndeterminate="True" Height="4" Margin="0,0,0,8" Visibility="{Binding EstaCargando, Converter={StaticResource BoolToVis}}"/>
+                    <!-- Row 0: Nombre, Categoria, Proveedor -->
+                    <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,0,12">
+                        <TextBlock Text="Nombre *" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,4"/>
+                        <TextBox Text="{Binding NombreProducto, UpdateSourceTrigger=PropertyChanged}" MaxLength="60"/>
+                    </StackPanel>
+                    
+                    <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,12">
+                        <TextBlock Text="Categoría *" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,4"/>
+                        <ComboBox ItemsSource="{Binding Categorias}" SelectedItem="{Binding CategoriaSeleccionada}" DisplayMemberPath="NombreCategoria"/>
+                    </StackPanel>
 
-                    <DataGrid Grid.Row="1" ItemsSource="{Binding Productos}" SelectedItem="{Binding ProductoSeleccionado}" AutoGenerateColumns="False" IsReadOnly="True">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding ProductoID}" Width="45"/>
-                            <DataGridTextColumn Header="Producto" Binding="{Binding NombreProducto}" Width="2*"/>
-                            <DataGridTextColumn Header="Categoría" Binding="{Binding NombreCategoria}" Width="1.2*"/>
-                            <DataGridTextColumn Header="Proveedor" Binding="{Binding NombreProveedor}" Width="1.5*"/>
-                            <DataGridTextColumn Header="Precio" Binding="{Binding PrecioUnidad, StringFormat='S/ {0:N2}'}" Width="90"/>
-                            <DataGridTextColumn Header="Stock" Binding="{Binding UnidadesEnExistencia}" Width="65"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                    <StackPanel Grid.Row="0" Grid.Column="4" Margin="0,0,0,12">
+                        <TextBlock Text="Proveedor *" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,4"/>
+                        <ComboBox ItemsSource="{Binding Proveedores}" SelectedItem="{Binding ProveedorSeleccionado}" DisplayMemberPath="CompaniaNombre"/>
+                    </StackPanel>
 
-                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
-                        <Button Style="{StaticResource PrimaryButton}" Content="Editar" Command="{Binding EditarCommand}" CommandParameter="{Binding ProductoSeleccionado}" Margin="0,0,8,0" Padding="20,7"/>
-                        <Button Style="{StaticResource DangerButton}" Content="Eliminar" Command="{Binding EliminarCommand}" CommandParameter="{Binding ProductoSeleccionado}" Padding="20,7"/>
+                    <StackPanel Grid.Row="0" Grid.Column="6" Margin="0,0,0,12">
+                        <TextBlock Text="Cantidad por unidad" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,4"/>
+                        <TextBox Text="{Binding CantidadPorUnidad, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+
+                    <!-- Row 1: Precios y Stock -->
+                    <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,0,12">
+                        <TextBlock Text="Precio S/" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,4"/>
+                        <TextBox Text="{Binding PrecioUnidad, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,0,0,12">
+                        <TextBlock Text="Existencia" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,4"/>
+                        <TextBox Text="{Binding UnidadesEnExistencia, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Grid.Column="4" Margin="0,0,0,12">
+                        <TextBlock Text="En pedido" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,4"/>
+                        <TextBox Text="{Binding UnidadesEnPedido, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Grid.Column="6" Margin="0,0,0,12">
+                        <TextBlock Text="Reorden" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,4"/>
+                        <TextBox Text="{Binding NivelDeReorden, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                    
+                    <!-- Row 2: Status, Messages, and Buttons -->
+                    <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="7" Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0,6,0,0">
+                        <CheckBox Content="Descontinuado" IsChecked="{Binding Descontinuado}" VerticalAlignment="Center" Margin="0,0,24,0"/>
+                        
+                        <TextBlock Text="{Binding MensajeError}" Foreground="#DC2626" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,16,0" FontWeight="SemiBold"/>
+                        <TextBlock Text="{Binding MensajeExito}" Foreground="#0F766E" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,16,0" FontWeight="SemiBold"/>
+
+                        <!-- Pushes the buttons to the right -->
+                        <Border HorizontalAlignment="Stretch" MinWidth="10"/>
+
+                        <!-- Buttons aligned to the right -->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="auto,0,0,0">
+                            <Button Content="Limpiar Formulario" Command="{Binding NuevoCommand}" Margin="0,0,12,0"/>
+                            <Button Style="{StaticResource OrangeButton}" Content="Guardar Producto" Command="{Binding GuardarCommand}" Padding="24,8"/>
+                        </StackPanel>
                     </StackPanel>
                 </Grid>
-            </Border>
-        </Grid>
+            </StackPanel>
+        </Border>
+
+        <!-- Grid Results Card -->
+        <Border Grid.Row="2" Background="{StaticResource CardBgBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="12" Padding="14">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <ProgressBar Grid.Row="0" IsIndeterminate="True" Height="4" Margin="0,0,0,8" Visibility="{Binding EstaCargando, Converter={StaticResource BoolToVis}}"/>
+
+                <DataGrid Grid.Row="1" ItemsSource="{Binding Productos}" SelectedItem="{Binding ProductoSeleccionado}" AutoGenerateColumns="False" IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding ProductoID}" Width="45"/>
+                        <DataGridTextColumn Header="Producto" Binding="{Binding NombreProducto}" Width="2*"/>
+                        <DataGridTextColumn Header="Categoría" Binding="{Binding NombreCategoria}" Width="1.2*"/>
+                        <DataGridTextColumn Header="Proveedor" Binding="{Binding NombreProveedor}" Width="1.5*"/>
+                        <DataGridTextColumn Header="Precio" Binding="{Binding PrecioUnidad, StringFormat='S/ {0:N2}'}" Width="90"/>
+                        <DataGridTextColumn Header="Stock" Binding="{Binding UnidadesEnExistencia}" Width="65"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+                    <Button Style="{StaticResource PrimaryButton}" Content="Editar Seleccionado" Command="{Binding EditarCommand}" CommandParameter="{Binding ProductoSeleccionado}" Margin="0,0,8,0" Padding="20,7"/>
+                    <Button Style="{StaticResource DangerButton}" Content="Eliminar" Command="{Binding EliminarCommand}" CommandParameter="{Binding ProductoSeleccionado}" Padding="20,7"/>
+                </StackPanel>
+            </Grid>
+        </Border>
     </Grid>
 </UserControl>
