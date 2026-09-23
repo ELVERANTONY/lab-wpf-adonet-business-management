@@ -1,3 +1,5 @@
+using System;
+using System.Configuration;
 using Microsoft.Data.SqlClient;
 
 namespace NeptunoApp.Data;
@@ -6,23 +8,35 @@ public static class DbConfig
 {
     public static string GetConnectionString()
     {
+        // 1. Variable de entorno completa
         var complete = Environment.GetEnvironmentVariable("NEPTUNO_CONNECTION_STRING");
         if (!string.IsNullOrWhiteSpace(complete)) return complete;
 
+        // 2. Parámetros de entorno individuales
         var password = Environment.GetEnvironmentVariable("MSSQL_SA_PASSWORD");
-        if (string.IsNullOrWhiteSpace(password))
-            throw new InvalidOperationException("Configura MSSQL_SA_PASSWORD o NEPTUNO_CONNECTION_STRING antes de iniciar la aplicación.");
-
-        return new SqlConnectionStringBuilder
+        if (!string.IsNullOrWhiteSpace(password))
         {
-            DataSource = $"{Environment.GetEnvironmentVariable("MSSQL_HOST") ?? "localhost"},{Environment.GetEnvironmentVariable("MSSQL_PORT") ?? "1433"}",
-            InitialCatalog = "NeptunoDB",
-            UserID = Environment.GetEnvironmentVariable("MSSQL_USER") ?? "sa",
-            Password = password,
-            Encrypt = true,
-            TrustServerCertificate = true,
-            ConnectTimeout = 8
-        }.ConnectionString;
+            return new SqlConnectionStringBuilder
+            {
+                DataSource = $"{Environment.GetEnvironmentVariable("MSSQL_HOST") ?? "localhost"},{Environment.GetEnvironmentVariable("MSSQL_PORT") ?? "1433"}",
+                InitialCatalog = "NeptunoDB",
+                UserID = Environment.GetEnvironmentVariable("MSSQL_USER") ?? "sa",
+                Password = password,
+                Encrypt = true,
+                TrustServerCertificate = true,
+                ConnectTimeout = 8
+            }.ConnectionString;
+        }
+
+        // 3. App.config si existe
+        try
+        {
+            var configConn = ConfigurationManager.ConnectionStrings["NeptunoConnection"]?.ConnectionString;
+            if (!string.IsNullOrWhiteSpace(configConn)) return configConn;
+        }
+        catch { }
+
+        // 4. Fallback estándar para Docker / Local
+        return "Server=localhost,1433;Database=NeptunoDB;User Id=sa;Password=NeptunoLab2026!;TrustServerCertificate=True;Connect Timeout=5;";
     }
 }
-
